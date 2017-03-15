@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+</body>
+<script>
+    let ball={x:512,y:100,r:20,g:0.7,vx:2,vy:0,color:'#005588'}
+    window.onload=function () {
+        let canvas=document.getElementById('canvas')
+        let context=canvas.getContext('2d')
+
+        canvas.width=1024;canvas.height=768
+        setInterval(function () {
+            render(context)
+            update()
+        },10)
+    }
+    function update() {
+        ball.x+=ball.vx;
+        ball.y+=ball.vy;
+        ball.vy+=ball.g;
+        if(ball.y>768-ball.r){
+            ball.y=768-ball.r
+            ball.vy=-(ball.vy)*0.5;
+        }
+    }
+    function render(ctx) {
+        ctx.clearRect(0,0,canvas.width,canvas.height)
+
+        ctx.fillStyle=ball.color;
+        ctx.beginPath()
+        ctx.arc(ball.x,ball.y,ball.r,0,2*Math.PI)
+        ctx.closePath()
+        ctx.fill()
+    }
+</script>
+</html>

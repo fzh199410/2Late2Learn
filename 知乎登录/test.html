@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+</body>
+<script>
+    var mod,b;
+    (function test(a) {"use strict";
+        a=a||{};
+        var arr=[],count=0,table={};
+        a.set=function (key, value, callback) {
+            arr.push(value)
+            table[key]=value;
+            count+=value;
+            if(callback)callback()
+        };
+        a.urlParse=function (url) {
+            if(!(url.indexOf('?')>=0))return;
+            var str=url.split('?')[1].split(/&|=/),result={};
+            for(var i=0,len=str.length;i<len;i+=2){
+                table[str[i]]=str[i+1]-0;
+                result[str[i]]=str[i+1]-0;
+                count+=table[str[i]]
+            }
+            return result
+        }
+        a.get=function (key) {
+            return table[key]?table[key]:'Do not have the value of '+key;
+        };
+        a.count=function () {
+            return count
+        };
+        a.getList=function () {
+            let data={
+                dataArr:arr,
+                dataTable:table
+            };
+            return data;
+        }
+        b=a
+    })(mod)
+    console.log(mod)  //undefined
+    b.set("dog",200)
+    console.log(b.get('dog'))  //200
+    setTimeout(function () {
+        //这些都是在所有的console执行之后才执行 因为是setTimeout
+        console.log(b.get('tiger')) //50
+        b.set('cat',400,function () {
+            console.log(b.get('cat'))  //400
+        })
+    },0)
+    console.log(b.get('cat')); //do nog have the value of cat
+    console.log(b.count())  //200
+    console.log(b.urlParse('http://www.abc.com?dog=500&pig=200&tiger=50&cat=600'))  //{dog:500,pig:200,tiger:50,cat:600}
+    console.log(b.count()) // 1550
+    console.log(b.getList())
+    function test(string) {
+        string+='';
+        let temp={};
+        let result='';
+        for(let i=0,len=string.length;i<len;i++){
+            if(!temp[string[i]]){
+                temp[string[i]]=1;
+            }else {
+                temp[string[i]]+=1;
+            }
+        }
+        console.log(temp)
+        for(let i=0,len=string.length;i<len;i++){
+            if(temp[string[i]]>1){
+                result+=')'
+            }else{
+                result+='('
+            }
+        }
+        return result;
+    }
+    console.log(test('abcab'))   //'))())'
+</script>
+</html>
