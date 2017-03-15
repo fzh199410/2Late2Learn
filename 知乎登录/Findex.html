@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        html,body{
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+<canvas id="cns"></canvas>
+</body>
+<script>
+    let Count=35;
+    let CircleArr=[];
+    let WIDTH=window.innerWidth,HEIGHT=window.innerHeight;
+    let canvas=document.getElementById('cns');
+    canvas.width=WIDTH;
+    canvas.height=HEIGHT;
+    let context=canvas.getContext('2d')
+    context.strokeStyle='rgba(0,0,0,0.04)';
+    context.strokeWidth=1;
+    context.fillStyle='rgba(0,0,0,0.08)';
+    function num(maxValue, minValue) {
+        let min=arguments[1]||0;
+        let max=maxValue;
+        return Math.floor(Math.random()*(max-min))+min
+    }
+    function Circle(x,y,r,moveX,moveY) {
+        this.x=x;
+        this.y=y;
+        this.r=r;
+        this.moveX=moveX;
+        this.moveY=moveY;
+    }
+    function Line(x, y, _x, _y, o) {
+        this.x=x;
+        this.y=y;
+        this._x=_x;
+        this._y=_y;
+        this.o=o
+    }
+    function drawCircle(ctx,x,y,r,moveX,moveY) {
+        let circle=new Circle(x,y,r,moveX,moveY);
+        ctx.beginPath();
+        ctx.arc(circle.x,circle.y,circle.r,0,2*Math.PI)
+        ctx.closePath()
+        ctx.fill();
+        return circle
+    }
+    function drawLine(ctx, x, y, _x, _y, o) {
+        let line = new Line(x, y, _x, _y, o)
+        ctx.beginPath()
+        ctx.strokeStyle = 'rgba(0,0,0,'+ o +')'
+        ctx.moveTo(line.x, line.y)
+        ctx.lineTo(line._x, line._y)
+        ctx.closePath()
+        ctx.stroke();
+    }
+    function draw() {
+        context.clearRect(0,0,WIDTH,HEIGHT);
+        for(let i = 0 ;i<Count;i++){
+            drawCircle(context,CircleArr[i].x,CircleArr[i].y,CircleArr[i].r)
+        }
+        for (let i = 0; i < Count; i++) {
+            for (let j = 0; j < Count; j++) {
+                if (i + j < Count&&i !== j&&i!==(i+j)) {
+                    let X=Math.abs(CircleArr[i+j].x-CircleArr[i].x)
+                    let Y=Math.abs(CircleArr[i+j].y-CircleArr[i].y)
+                    let dis=Math.sqrt(X*X + Y*Y);
+                    let C=1/dis*7-0.009;
+                    let opacity=C>0.03?0.03:C;
+                    if(opacity>0){
+                        drawLine(context,CircleArr[i].x,CircleArr[i].y,CircleArr[i+j].x,CircleArr[i+j].y,opacity)
+                    }
+                }
+            }
+        }
+    }
+    function init() {
+        for(let i=0;i<Count;i++){
+            CircleArr.push(drawCircle(context,num(WIDTH),num(HEIGHT),num(15,2),num(10,-10)/40,num(10,-10)/40))
+        }
+        draw()
+    }
+
+    window.onload=function () {
+        init()
+        setInterval(
+            function () {
+                for(let i=0;i<Count;i++){
+                    let circle=CircleArr[i];
+                    circle.x+=circle.moveX;
+                    circle.y+=circle.moveY;
+                    if(circle.x>WIDTH){
+                        circle.x=0
+                    }else if(circle.x<0){
+                        circle.x=WIDTH
+                    }
+                    if(circle.y>HEIGHT){
+                        circle.y=0
+                    }else if(circle.y<0)(
+                        circle.y=HEIGHT
+                    )
+                }
+                draw()
+            },16)
+    }
+</script>
+</html>

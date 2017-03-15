@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>水波按钮</title>
+    <style>
+        body{
+            background-color: #dadada;
+        }
+        ul{
+            font-size: 0;
+            position:relative;
+            padding: 0;
+            width:480px;
+            margin:40px auto;
+            user-select: none;
+        }
+        li{
+            display: inline-block;
+            list-style: none;
+            width:160px;
+            height:60px;
+            background-color: #e95546;
+            font-size: 16px;
+            text-align: center;
+            line-height: 60px;
+            color: #fff;
+            text-transform: uppercase;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        .slider{
+            display: block;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 4px;
+            background-color: #4fc2e5;
+            transition: all 0.5s;
+        }
+        .ripple{
+            width:0;
+            height:0;
+            border-radius: 50%;
+            background:rgba(255,255,255,0.4) ;
+            transform: scale(0);
+            position: absolute;
+            opacity: 1;
+        }
+        .rippleEffect{
+            animation: rippleDrop .4s linear;
+        }
+        @keyframes rippleDrop {
+            100%{
+                transform: scale(2);
+                opacity: 0;
+            }
+        }
+    </style>
+    <script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.js"></script>
+</head>
+<body>
+    <ul>
+        <li>Tab One</li>
+        <li>Tab One</li>
+        <li>Tab One</li>
+        <li class="slider"></li>
+    </ul>
+</body>
+<script>
+    $('ul li').click(function (e) {
+        if($(this).hasClass('slider')){ return;}
+        var whatTab=$(this).index()
+        var howFar=whatTab*160;
+        $('.slider').css({'left':howFar+'px'})
+
+        $('.ripple').remove();
+
+        var posX=$(this).offset().left;
+        var posY=$(this).offset().top;
+        var buttonWidth=$(this).width();
+        var buttonHeight=$(this).height();
+        $(this).prepend('<span class="ripple"></span>')
+        if (buttonWidth >= buttonHeight) {
+            buttonHeight = buttonWidth;
+        } else {
+            buttonWidth = buttonHeight;
+        }
+        var x = e.pageX - posX - buttonWidth / 2;
+        var y = e.pageY - posY - buttonHeight / 2;
+        console.log(x,y)
+        $('.ripple').css({
+            width:buttonWidth,
+            height:buttonHeight,
+            top:y+'px',
+            left:x+'px'
+        }).addClass('rippleEffect')
+    })
+</script>
+</html>
